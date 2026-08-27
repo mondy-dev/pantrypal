@@ -1,0 +1,12 @@
+# Backend (Maven/Java)
+backend/target/
+backend/src/main/resources/application.properties
+
+# Frontend (Node/Vite)
+pantrypal-frontend/node_modules/
+pantrypal-frontend/dist/
+
+# IDE/OS
+.vscode/
+.DS_Store
+*.log
