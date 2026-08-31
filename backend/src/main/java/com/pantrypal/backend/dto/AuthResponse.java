@@ -4,13 +4,17 @@ public class AuthResponse {
 
     private String token;
     private Long userId;
-    private String name;
+    private String firstName;
+    private String middleName;
+    private String lastName;
     private String email;
 
-    public AuthResponse(String token, Long userId, String name, String email) {
+    public AuthResponse(String token, Long userId, String firstName, String middleName, String lastName, String email) {
         this.token = token;
         this.userId = userId;
-        this.name = name;
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
         this.email = email;
     }
 
@@ -22,8 +26,16 @@ public class AuthResponse {
         return userId;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public String getLastName() {
+        return lastName;
     }
 
     public String getEmail() {

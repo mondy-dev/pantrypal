@@ -1,9 +1,14 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { Mail } from "lucide-react";
 import { useAuth } from "../context/useAuth";
+import PasswordInput from "../components/PasswordInput";
+import IconInput from "../components/IconInput";
 
 function Register() {
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [middleName, setMiddleName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -18,7 +23,7 @@ function Register() {
     setLoading(true);
 
     try {
-      await register(name, email, password);
+      await register(firstName, middleName, lastName, email, password);
       navigate("/dashboard");
     } catch (err) {
       const message =
@@ -38,31 +43,57 @@ function Register() {
 
         {error && <p className="error-message">{error}</p>}
 
-        <label htmlFor="name">Name</label>
+        <div className="name-row">
+          <div>
+            <label htmlFor="firstName">First Name</label>
+            <input
+              id="firstName"
+              type="text"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="Juan"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="lastName">Last Name</label>
+            <input
+              id="lastName"
+              type="text"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Dela Cruz"
+              required
+            />
+          </div>
+        </div>
+
+        <label htmlFor="middleName">Middle Name (optional)</label>
         <input
-          id="name"
+          id="middleName"
           type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
+          value={middleName}
+          onChange={(e) => setMiddleName(e.target.value)}
+          placeholder="Reyes"
         />
 
         <label htmlFor="email">Email</label>
-        <input
+        <IconInput
+          icon={<Mail size={18} />}
           id="email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          placeholder="you@example.com"
           required
         />
 
         <label htmlFor="password">Password</label>
-        <input
+        <PasswordInput
           id="password"
-          type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          required
+          placeholder="Enter password"
           minLength={8}
         />
 

@@ -1,111 +1,169 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap");
+
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  /* Color */
+  --color-bg: #f5f1e8;
+  --color-surface: #ffffff;
+  --color-ink: #3a3530;
+  --color-ink-soft: #746b5d;
+  --color-primary: #2f4b3c;
+  --color-primary-dark: #22362a;
+  --color-danger: #c4472e;
+  --color-danger-bg: #f8e6e1;
+  --color-warning: #d9a441;
+  --color-border: #ded3be;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+  /* Type */
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "IBM Plex Sans", -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
-}
-
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-ink);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
 }
 
 h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-ink);
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
 p {
   margin: 0;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+a {
+  color: var(--color-primary);
 }
 
-code {
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Visible keyboard focus everywhere, not just mouse hover states */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* --- Auth pages (Login / Register) --- */
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.auth-form {
+  width: 100%;
+  max-width: 470px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 40px 32px;
+  box-shadow: 0 2px 8px rgba(58, 53, 48, 0.06);
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-form h1 {
+  font-size: 28px;
+  font-style: italic;
+  color: var(--color-primary);
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.auth-form h2 {
+  font-size: 16px;
+  font-weight: 400;
+  font-family: var(--font-body);
+  color: var(--color-ink-soft);
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.auth-form label {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
+  margin-bottom: 6px;
+  margin-top: 16px;
+}
+
+.auth-form input {
+  font-family: var(--font-body);
   font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-bg);
+  color: var(--color-ink);
+}
+
+.auth-form button {
+  margin-top: 24px;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background: var(--color-primary);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  transition: background 0.15s ease;
+}
+
+.auth-form button:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+}
+
+.auth-form p {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: var(--color-ink-soft);
+}
+
+.error-message {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+  font-size: 14px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+.name-row {
+  display: flex;
+  gap: 12px;
+}
+
+.name-row > div {
+  flex: 1;
 }

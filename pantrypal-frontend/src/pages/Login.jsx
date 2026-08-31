@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
-
+import PasswordInput from "../components/PasswordInput";
+import { Mail } from "lucide-react";
+import IconInput from "../components/IconInput";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,26 +35,27 @@ function Login() {
     <div className="auth-page">
       <form onSubmit={handleSubmit} className="auth-form">
         <h1>PantryPal</h1>
-        <h2>Log in</h2>
+        <h2>Sign In</h2>
 
         {error && <p className="error-message">{error}</p>}
 
         <label htmlFor="email">Email</label>
-        <input
+        <IconInput
+          icon={<Mail size={18} />}
           id="email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          placeholder="Enter your email"
         />
 
         <label htmlFor="password">Password</label>
-        <input
+        <PasswordInput
           id="password"
-          type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          required
+          placeholder="Enter password"
         />
 
         <button type="submit" disabled={loading}>

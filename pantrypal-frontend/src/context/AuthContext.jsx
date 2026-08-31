@@ -19,7 +19,9 @@ export function AuthProvider({ children }) {
     const data = await authService.login(email, password);
     const loggedInUser = {
       userId: data.userId,
-      name: data.name,
+      firstName: data.firstName,
+      middleName: data.middleName,
+      lastName: data.lastName,
       email: data.email,
     };
 
@@ -30,11 +32,19 @@ export function AuthProvider({ children }) {
     return loggedInUser;
   };
 
-  const register = async (name, email, password) => {
-    const data = await authService.register(name, email, password);
+  const register = async (firstName, middleName, lastName, email, password) => {
+    const data = await authService.register(
+      firstName,
+      middleName,
+      lastName,
+      email,
+      password,
+    );
     const registeredUser = {
       userId: data.userId,
-      name: data.name,
+      firstName: data.firstName,
+      middleName: data.middleName,
+      lastName: data.lastName,
       email: data.email,
     };
 
