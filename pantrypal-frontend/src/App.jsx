@@ -3,7 +3,9 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
-
+import RequireHousehold from "./components/RequireHousehold";
+import CreateHousehold from "./pages/CreateHousehold";
+import Household from "./pages/Household";
 function App() {
   return (
     <Routes>
@@ -13,7 +15,27 @@ function App() {
         path="/dashboard"
         element={
           <ProtectedRoute>
-            <Dashboard />
+            <RequireHousehold>
+              <Dashboard />
+            </RequireHousehold>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/create-household"
+        element={
+          <ProtectedRoute>
+            <CreateHousehold />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/household"
+        element={
+          <ProtectedRoute>
+            <RequireHousehold>
+              <Household />
+            </RequireHousehold>
           </ProtectedRoute>
         }
       />
