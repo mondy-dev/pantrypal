@@ -16,6 +16,7 @@ function Dashboard() {
       <p>Email: {user?.email}</p>
       <button onClick={handleLogout}>Logout</button>
       <button onClick={() => navigate("/household")}>View Household</button>
+      <button onClick={() => navigate("/inventory")}>View Inventory</button>
       <p>
         This is a placeholder Dashboard. Real inventory data comes in Sprint
         4-5.

@@ -6,6 +6,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import RequireHousehold from "./components/RequireHousehold";
 import CreateHousehold from "./pages/CreateHousehold";
 import Household from "./pages/Household";
+import Inventory from "./pages/Inventory";
 function App() {
   return (
     <Routes>
@@ -35,6 +36,16 @@ function App() {
           <ProtectedRoute>
             <RequireHousehold>
               <Household />
+            </RequireHousehold>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/inventory"
+        element={
+          <ProtectedRoute>
+            <RequireHousehold>
+              <Inventory />
             </RequireHousehold>
           </ProtectedRoute>
         }
