@@ -3,6 +3,8 @@ package com.pantrypal.backend.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -11,10 +13,15 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    // For development only: a fixed secret key.
-    // In production this should come from an environment variable, never hardcoded.
-    private static final String SECRET = "pantrypal-super-secret-key-change-this-in-production-1234567890";
-    private final SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes());
+    @Value("${app.jwt.secret}")
+    private String secret;
+
+    private SecretKey key;
+
+    @PostConstruct
+    public void init() {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+    }
 
     private static final long EXPIRATION_MS = 1000 * 60 * 60 * 24; // 24 hours
 
