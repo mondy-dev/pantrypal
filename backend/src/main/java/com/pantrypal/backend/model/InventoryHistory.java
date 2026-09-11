@@ -34,6 +34,13 @@ public class InventoryHistory {
 
     private String note;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "waste_reason")
+    private WasteReason wasteReason;
+
+    @Column(name = "price_snapshot", precision = 10, scale = 2)
+    private BigDecimal priceSnapshot;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -46,7 +53,8 @@ public class InventoryHistory {
     }
 
     public InventoryHistory(Household household, User user, String foodItemName, ActionType actionType,
-            BigDecimal quantityChange, String unit, String note) {
+            BigDecimal quantityChange, String unit, String note,
+            WasteReason wasteReason, BigDecimal priceSnapshot) {
         this.household = household;
         this.user = user;
         this.foodItemName = foodItemName;
@@ -54,6 +62,8 @@ public class InventoryHistory {
         this.quantityChange = quantityChange;
         this.unit = unit;
         this.note = note;
+        this.wasteReason = wasteReason;
+        this.priceSnapshot = priceSnapshot;
     }
 
     public Long getId() {
@@ -90,5 +100,13 @@ public class InventoryHistory {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public WasteReason getWasteReason() {
+        return wasteReason;
+    }
+
+    public BigDecimal getPriceSnapshot() {
+        return priceSnapshot;
     }
 }

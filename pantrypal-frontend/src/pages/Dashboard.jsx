@@ -51,6 +51,7 @@ function Dashboard() {
         <button onClick={() => navigate("/shopping-list")}>
           View Shopping List
         </button>
+        <button onClick={() => navigate("/reports")}>View Reports</button>
       </div>
 
       {!loading && (

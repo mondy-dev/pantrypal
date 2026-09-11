@@ -20,8 +20,8 @@ export const updateFoodItem = async (id, data) => {
     return response.data;
 };
 
-export const deleteFoodItem = async (id) => {
-    await api.delete(`/food/${id}`);
+export const deleteFoodItem = async (id, reason) => {
+    await api.delete(`/food/${id}`, { params: { reason } });
 };
 export const consumeFoodItem = async (id, amount, note) => {
     const response = await api.post(`/food/${id}/consume`, { amount, note });

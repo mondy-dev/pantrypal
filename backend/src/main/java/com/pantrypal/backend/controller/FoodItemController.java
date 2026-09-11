@@ -12,8 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-
+import com.pantrypal.backend.model.WasteReason;
 import java.util.List;
 import java.util.Map;
 
@@ -90,9 +89,11 @@ public class FoodItemController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id, Authentication authentication) {
+    public ResponseEntity<?> delete(@PathVariable Long id,
+            @RequestParam(required = false) WasteReason reason,
+            Authentication authentication) {
         try {
-            foodItemService.delete(authentication.getName(), id);
+            foodItemService.delete(authentication.getName(), id, reason);
             return ResponseEntity.noContent().build();
         } catch (FoodItemException | HouseholdException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));

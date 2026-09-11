@@ -10,6 +10,7 @@ import Inventory from "./pages/Inventory";
 import Expiration from "./pages/Expiration";
 import History from "./pages/History";
 import ShoppingList from "./pages/ShoppingList";
+import Reports from "./pages/Reports";
 function App() {
   return (
     <Routes>
@@ -79,6 +80,16 @@ function App() {
           <ProtectedRoute>
             <RequireHousehold>
               <ShoppingList />
+            </RequireHousehold>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/reports"
+        element={
+          <ProtectedRoute>
+            <RequireHousehold>
+              <Reports />
             </RequireHousehold>
           </ProtectedRoute>
         }

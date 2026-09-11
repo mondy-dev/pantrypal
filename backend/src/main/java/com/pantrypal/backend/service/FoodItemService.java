@@ -23,7 +23,7 @@ import com.pantrypal.backend.repository.InventoryHistoryRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-
+import com.pantrypal.backend.model.WasteReason;
 import java.util.List;
 
 @Service
@@ -73,7 +73,7 @@ public class FoodItemService {
         foodItemRepository.save(foodItem);
 
         logHistory(household, user, foodItem.getName(), ActionType.ADDED, foodItem.getQuantity(), foodItem.getUnit(),
-                null);
+                null, null, null);
 
         return buildResponse(foodItem);
     }
@@ -90,13 +90,14 @@ public class FoodItemService {
         return buildResponse(foodItem);
     }
 
-    public void delete(String requesterEmail, Long foodItemId) {
+    public void delete(String requesterEmail, Long foodItemId, WasteReason reason) {
         User user = getUserByEmail(requesterEmail);
         Household household = getHouseholdForUser(requesterEmail);
         FoodItem foodItem = foodItemRepository.findByIdAndHousehold(foodItemId, household)
                 .orElseThrow(() -> new FoodItemException("Food item not found."));
 
-        logHistory(household, user, foodItem.getName(), ActionType.DELETED, null, foodItem.getUnit(), null);
+        logHistory(household, user, foodItem.getName(), ActionType.DELETED, null, foodItem.getUnit(), null, reason,
+                foodItem.getPrice());
 
         foodItemRepository.delete(foodItem);
     }
@@ -116,7 +117,7 @@ public class FoodItemService {
         foodItemRepository.save(foodItem);
 
         logHistory(household, user, foodItem.getName(), ActionType.CONSUMED, request.getAmount(), foodItem.getUnit(),
-                request.getNote());
+                request.getNote(), null, null);
 
         return buildResponse(foodItem);
     }
@@ -138,9 +139,10 @@ public class FoodItemService {
     }
 
     private void logHistory(Household household, User user, String foodItemName, ActionType actionType,
-            BigDecimal quantityChange, String unit, String note) {
+            BigDecimal quantityChange, String unit, String note,
+            WasteReason wasteReason, BigDecimal priceSnapshot) {
         InventoryHistory history = new InventoryHistory(household, user, foodItemName, actionType, quantityChange, unit,
-                note);
+                note, wasteReason, priceSnapshot);
         inventoryHistoryRepository.save(history);
     }
 

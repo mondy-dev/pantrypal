@@ -76,12 +76,12 @@ function FoodDetailsModal({ item, onClose, onUpdated, onDeleted }) {
     }
   };
 
-  const handleDelete = async () => {
-    if (!window.confirm(`Delete "${item.name}"? This cannot be undone.`))
-      return;
+  const [showDeleteReason, setShowDeleteReason] = useState(false);
+  const [deleteReason, setDeleteReason] = useState("CONSUMED");
 
+  const confirmDelete = async () => {
     try {
-      await foodService.deleteFoodItem(item.id);
+      await foodService.deleteFoodItem(item.id, deleteReason);
       onDeleted(item.id);
       onClose();
     } catch {
@@ -192,10 +192,52 @@ function FoodDetailsModal({ item, onClose, onUpdated, onDeleted }) {
               <button type="button" onClick={() => setConsuming(true)}>
                 Consume
               </button>
-              <button type="button" onClick={handleDelete}>
+              <button type="button" onClick={() => setShowDeleteReason(true)}>
                 Delete
               </button>
             </div>
+
+            {showDeleteReason && (
+              <div
+                style={{
+                  marginTop: "16px",
+                  borderTop: "1px solid var(--color-border)",
+                  paddingTop: "16px",
+                }}
+              >
+                <p>Why are you removing "{item.name}"?</p>
+
+                {["CONSUMED", "EXPIRED", "SPOILED", "DAMAGED", "OTHER"].map(
+                  (reason) => (
+                    <label
+                      key={reason}
+                      style={{ display: "block", marginBottom: "4px" }}
+                    >
+                      <input
+                        type="radio"
+                        name="deleteReason"
+                        value={reason}
+                        checked={deleteReason === reason}
+                        onChange={(e) => setDeleteReason(e.target.value)}
+                      />{" "}
+                      {reason.charAt(0) + reason.slice(1).toLowerCase()}
+                    </label>
+                  ),
+                )}
+
+                <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
+                  <button
+                    type="button"
+                    onClick={() => setShowDeleteReason(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button type="button" onClick={confirmDelete}>
+                    Confirm Delete
+                  </button>
+                </div>
+              </div>
+            )}
 
             {consuming && (
               <form
