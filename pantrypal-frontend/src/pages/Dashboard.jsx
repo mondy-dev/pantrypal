@@ -48,6 +48,9 @@ function Dashboard() {
         <button onClick={() => navigate("/inventory")}>View Inventory</button>
         <button onClick={() => navigate("/expiration")}>View Expiration</button>
         <button onClick={() => navigate("/history")}>View History</button>
+        <button onClick={() => navigate("/shopping-list")}>
+          View Shopping List
+        </button>
       </div>
 
       {!loading && (
