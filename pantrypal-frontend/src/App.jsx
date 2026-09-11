@@ -7,6 +7,8 @@ import RequireHousehold from "./components/RequireHousehold";
 import CreateHousehold from "./pages/CreateHousehold";
 import Household from "./pages/Household";
 import Inventory from "./pages/Inventory";
+import Expiration from "./pages/Expiration";
+import History from "./pages/History";
 function App() {
   return (
     <Routes>
@@ -46,6 +48,26 @@ function App() {
           <ProtectedRoute>
             <RequireHousehold>
               <Inventory />
+            </RequireHousehold>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/expiration"
+        element={
+          <ProtectedRoute>
+            <RequireHousehold>
+              <Expiration />
+            </RequireHousehold>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/history"
+        element={
+          <ProtectedRoute>
+            <RequireHousehold>
+              <History />
             </RequireHousehold>
           </ProtectedRoute>
         }

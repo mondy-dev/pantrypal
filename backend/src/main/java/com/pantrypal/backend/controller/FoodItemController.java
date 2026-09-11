@@ -1,7 +1,9 @@
 package com.pantrypal.backend.controller;
 
+import com.pantrypal.backend.dto.ConsumeRequest;
 import com.pantrypal.backend.dto.FoodItemRequest;
 import com.pantrypal.backend.dto.FoodItemResponse;
+import com.pantrypal.backend.dto.HistoryResponse;
 import com.pantrypal.backend.exception.FoodItemException;
 import com.pantrypal.backend.exception.HouseholdException;
 import com.pantrypal.backend.service.FoodItemService;
@@ -10,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 import java.util.Map;
@@ -61,6 +64,27 @@ public class FoodItemController {
             FoodItemResponse item = foodItemService.update(authentication.getName(), id, request);
             return ResponseEntity.ok(item);
         } catch (FoodItemException | HouseholdException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/{id}/consume")
+    public ResponseEntity<?> consume(@PathVariable Long id, @Valid @RequestBody ConsumeRequest request,
+            Authentication authentication) {
+        try {
+            FoodItemResponse item = foodItemService.consume(authentication.getName(), id, request);
+            return ResponseEntity.ok(item);
+        } catch (FoodItemException | HouseholdException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<?> getHistory(Authentication authentication) {
+        try {
+            List<HistoryResponse> history = foodItemService.getHistory(authentication.getName());
+            return ResponseEntity.ok(history);
+        } catch (HouseholdException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", e.getMessage()));
         }
     }

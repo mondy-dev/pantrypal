@@ -22,11 +22,14 @@ public class FoodItemResponse {
     private String notes;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String expirationStatus;
+    private long daysUntilExpiration;
 
     public FoodItemResponse(Long id, String name, Long categoryId, String categoryName, String brand,
             BigDecimal quantity, String unit, LocalDate purchaseDate, LocalDate expirationDate,
             String storageLocation, BigDecimal minimumStock, BigDecimal price, String imageUrl,
-            String notes, LocalDateTime createdAt, LocalDateTime updatedAt) {
+            String notes, LocalDateTime createdAt, LocalDateTime updatedAt,
+            String expirationStatus, long daysUntilExpiration) {
         this.id = id;
         this.name = name;
         this.categoryId = categoryId;
@@ -43,6 +46,8 @@ public class FoodItemResponse {
         this.notes = notes;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.expirationStatus = expirationStatus;
+        this.daysUntilExpiration = daysUntilExpiration;
     }
 
     public Long getId() {
@@ -107,5 +112,13 @@ public class FoodItemResponse {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public String getExpirationStatus() {
+        return expirationStatus;
+    }
+
+    public long getDaysUntilExpiration() {
+        return daysUntilExpiration;
     }
 }

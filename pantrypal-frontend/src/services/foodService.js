@@ -23,3 +23,12 @@ export const updateFoodItem = async (id, data) => {
 export const deleteFoodItem = async (id) => {
     await api.delete(`/food/${id}`);
 };
+export const consumeFoodItem = async (id, amount, note) => {
+    const response = await api.post(`/food/${id}/consume`, { amount, note });
+    return response.data;
+};
+
+export const getHistory = async () => {
+    const response = await api.get('/food/history');
+    return response.data;
+};
