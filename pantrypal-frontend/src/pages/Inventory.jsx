@@ -67,17 +67,11 @@ function Inventory() {
       );
     }
 
-    if (categoryFilter) {
+    if (categoryFilter)
       result = result.filter((i) => i.categoryName === categoryFilter);
-    }
-
-    if (storageFilter) {
+    if (storageFilter)
       result = result.filter((i) => i.storageLocation === storageFilter);
-    }
-
-    if (stockFilter === "low") {
-      result = result.filter(isLowStock);
-    }
+    if (stockFilter === "low") result = result.filter(isLowStock);
 
     result = [...result].sort((a, b) => {
       if (sortBy === "name") return a.name.localeCompare(b.name);
@@ -91,23 +85,32 @@ function Inventory() {
     return result;
   }, [items, search, categoryFilter, storageFilter, stockFilter, sortBy]);
 
-  if (loading) return <p>Loading inventory...</p>;
+  const statusClass = (status) => {
+    if (status === "EXPIRED") return "status-tag status-expired";
+    if (status === "CRITICAL") return "status-tag status-critical";
+    if (status === "EXPIRING_SOON") return "status-tag status-expiring-soon";
+    return "status-tag status-fresh";
+  };
+
+  if (loading)
+    return (
+      <div className="page">
+        <p>Loading inventory...</p>
+      </div>
+    );
 
   return (
-    <div style={{ padding: "32px" }}>
-      <h1>Inventory</h1>
-      <button onClick={() => setShowAddModal(true)}>+ Add Food</button>
+    <div className="page">
+      <div className="page-header">
+        <h1>Inventory</h1>
+        <button className="btn-primary" onClick={() => setShowAddModal(true)}>
+          + Add Food
+        </button>
+      </div>
 
       {error && <p className="error-message">{error}</p>}
 
-      <div
-        style={{
-          display: "flex",
-          gap: "12px",
-          flexWrap: "wrap",
-          margin: "16px 0",
-        }}
-      >
+      <div className="toolbar">
         <input
           type="text"
           placeholder="Search by name, brand, category..."
@@ -156,24 +159,38 @@ function Inventory() {
       </div>
 
       {visibleItems.length === 0 && (
-        <p>No food items match your search/filters.</p>
+        <div className="empty-state">
+          <p>No food items match your search/filters.</p>
+        </div>
       )}
 
-      <ul>
+      <div className="food-grid">
         {visibleItems.map((item) => (
-          <li
+          <div
             key={item.id}
-            style={{ marginBottom: "8px", cursor: "pointer" }}
+            className="food-card"
             onClick={() => setSelectedItem(item)}
           >
-            <strong>{item.name}</strong> — {item.quantity} {item.unit} —{" "}
-            {item.categoryName} — Expires: {item.expirationDate}
-            {isLowStock(item) && (
-              <span style={{ color: "var(--color-danger)" }}> (Low Stock)</span>
-            )}
-          </li>
+            <div className="food-card-header">
+              <h3>{item.name}</h3>
+              <span className={statusClass(item.expirationStatus)}>
+                {item.expirationStatus.replace("_", " ")}
+              </span>
+            </div>
+
+            <p className="food-card-category">{item.categoryName}</p>
+
+            <p className="food-card-quantity">
+              {item.quantity} {item.unit}
+              {isLowStock(item) && (
+                <span className="low-stock-badge"> Low Stock</span>
+              )}
+            </p>
+
+            <p className="food-card-expiry">Expires {item.expirationDate}</p>
+          </div>
         ))}
-      </ul>
+      </div>
 
       {showAddModal && (
         <AddFoodModal
