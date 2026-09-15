@@ -92,7 +92,7 @@ function ShoppingList() {
 
   const isLowStock = (item) =>
     item.minimumStock != null &&
-    Number(item.quantity) <= Number(item.minimumStock);
+    Number(item.quantity) < Number(item.minimumStock);
 
   const listedNames = items.map((i) => i.name.toLowerCase());
   const suggestions = foodItems.filter(

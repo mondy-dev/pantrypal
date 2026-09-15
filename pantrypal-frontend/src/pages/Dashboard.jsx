@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/useAuth";
+import { useHousehold } from "../context/useHousehold";
 import { useNavigate } from "react-router-dom";
 import * as foodService from "../services/foodService";
 
 function Dashboard() {
   const { user, logout } = useAuth();
+  const { clearHousehold } = useHousehold();
   const navigate = useNavigate();
-
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -20,6 +21,7 @@ function Dashboard() {
 
   const handleLogout = () => {
     logout();
+    clearHousehold();
     navigate("/login");
   };
 
@@ -34,7 +36,7 @@ function Dashboard() {
   ).length;
   const lowStockItems = items.filter(
     (i) =>
-      i.minimumStock != null && Number(i.quantity) <= Number(i.minimumStock),
+      i.minimumStock != null && Number(i.quantity) < Number(i.minimumStock),
   );
 
   return (

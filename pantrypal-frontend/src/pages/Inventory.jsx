@@ -52,7 +52,7 @@ function Inventory() {
 
   const isLowStock = (item) =>
     item.minimumStock != null &&
-    Number(item.quantity) <= Number(item.minimumStock);
+    Number(item.quantity) < Number(item.minimumStock);
 
   const visibleItems = useMemo(() => {
     let result = items;
