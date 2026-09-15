@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/useAuth";
-import { useHousehold } from "../context/useHousehold";
-import { useNavigate } from "react-router-dom";
 import * as foodService from "../services/foodService";
 
 function Dashboard() {
-  const { user, logout } = useAuth();
-  const { clearHousehold } = useHousehold();
-  const navigate = useNavigate();
+  const { user } = useAuth();
+
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -18,12 +15,6 @@ function Dashboard() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
-
-  const handleLogout = () => {
-    logout();
-    clearHousehold();
-    navigate("/login");
-  };
 
   const expiredCount = items.filter(
     (i) => i.expirationStatus === "EXPIRED",
@@ -43,18 +34,6 @@ function Dashboard() {
     <div style={{ padding: "32px" }}>
       <h1>Welcome, {user?.firstName}!</h1>
       <p>Email: {user?.email}</p>
-
-      <div style={{ display: "flex", gap: "12px", margin: "16px 0" }}>
-        <button onClick={handleLogout}>Logout</button>
-        <button onClick={() => navigate("/household")}>View Household</button>
-        <button onClick={() => navigate("/inventory")}>View Inventory</button>
-        <button onClick={() => navigate("/expiration")}>View Expiration</button>
-        <button onClick={() => navigate("/history")}>View History</button>
-        <button onClick={() => navigate("/shopping-list")}>
-          View Shopping List
-        </button>
-        <button onClick={() => navigate("/reports")}>View Reports</button>
-      </div>
 
       {!loading && (
         <div style={{ marginTop: "24px" }}>
