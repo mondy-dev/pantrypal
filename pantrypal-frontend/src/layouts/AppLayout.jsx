@@ -1,6 +1,7 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
+  Home,
   Package,
   Clock,
   ShoppingCart,
@@ -13,6 +14,7 @@ import { useHousehold } from "../context/useHousehold";
 
 const NAV_ITEMS = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/household", label: "Household", icon: Home },
   { to: "/inventory", label: "Inventory", icon: Package },
   { to: "/expiration", label: "Expiration", icon: Clock },
   { to: "/shopping-list", label: "Shopping List", icon: ShoppingCart },

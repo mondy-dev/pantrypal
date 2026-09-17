@@ -11,7 +11,11 @@ function Household() {
   const [loading, setLoading] = useState(false);
 
   if (!household) {
-    return <p>Loading household...</p>;
+    return (
+      <div className="page">
+        <p>Loading household...</p>
+      </div>
+    );
   }
 
   const currentMember = household.members.find(
@@ -50,47 +54,70 @@ function Household() {
     }
   };
 
+  const initials = (firstName, lastName) =>
+    `${firstName?.[0] || ""}${lastName?.[0] || ""}`.toUpperCase();
+
   return (
-    <div style={{ padding: "32px", maxWidth: "600px" }}>
-      <h1>{household.name}</h1>
-      <h2>Members</h2>
+    <div className="page">
+      <div className="page-header">
+        <h1>{household.name}</h1>
+      </div>
 
       {error && <p className="error-message">{error}</p>}
 
-      <ul>
+      <h2 className="section-heading">Members</h2>
+
+      <div className="member-list">
         {household.members.map((member) => (
-          <li key={member.userId} style={{ marginBottom: "8px" }}>
-            {member.firstName} {member.lastName} ({member.email}) —{" "}
-            {member.role}
+          <div key={member.userId} className="member-row">
+            <div className="member-avatar">
+              {initials(member.firstName, member.lastName)}
+            </div>
+
+            <div className="member-info">
+              <span className="member-name">
+                {member.firstName} {member.lastName}
+              </span>
+              <span className="member-email">{member.email}</span>
+            </div>
+
+            <span
+              className={
+                "role-badge" + (member.role === "OWNER" ? " role-owner" : "")
+              }
+            >
+              {member.role}
+            </span>
+
             {isOwner && member.role !== "OWNER" && (
               <button
                 type="button"
+                className="btn-danger btn-small"
                 onClick={() => handleRemove(member.userId)}
-                style={{ marginLeft: "12px" }}
               >
                 Remove
               </button>
             )}
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
 
       {isOwner && (
-        <form onSubmit={handleInvite} style={{ marginTop: "24px" }}>
-          <h3>Invite a Member</h3>
-          <label htmlFor="inviteEmail">Email</label>
-          <input
-            id="inviteEmail"
-            type="email"
-            value={inviteEmail}
-            onChange={(e) => setInviteEmail(e.target.value)}
-            placeholder="member@example.com"
-            required
-          />
-          <button type="submit" disabled={loading}>
-            {loading ? "Inviting..." : "Invite"}
-          </button>
-        </form>
+        <div className="invite-section">
+          <h2 className="section-heading">Invite a Member</h2>
+          <form onSubmit={handleInvite} className="invite-form">
+            <input
+              type="email"
+              value={inviteEmail}
+              onChange={(e) => setInviteEmail(e.target.value)}
+              placeholder="member@example.com"
+              required
+            />
+            <button type="submit" className="btn-primary" disabled={loading}>
+              {loading ? "Inviting..." : "Invite"}
+            </button>
+          </form>
+        </div>
       )}
     </div>
   );

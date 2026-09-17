@@ -55,44 +55,68 @@ function Expiration() {
     return `${item.daysUntilExpiration} day(s) remaining`;
   };
 
-  if (loading) return <p>Loading...</p>;
+  const statusClass = (status) => {
+    if (status === "EXPIRED") return "status-tag status-expired";
+    if (status === "CRITICAL") return "status-tag status-critical";
+    if (status === "EXPIRING_SOON") return "status-tag status-expiring-soon";
+    return "status-tag status-fresh";
+  };
+
+  if (loading)
+    return (
+      <div className="page">
+        <p>Loading...</p>
+      </div>
+    );
 
   return (
-    <div style={{ padding: "32px" }}>
-      <h1>Expiration Monitoring</h1>
+    <div className="page">
+      <div className="page-header">
+        <h1>Expiration Monitoring</h1>
+      </div>
 
       {error && <p className="error-message">{error}</p>}
 
-      <div style={{ display: "flex", gap: "8px", margin: "16px 0" }}>
+      <div className="tabs">
         {TABS.map((tab) => (
           <button
             key={tab.key}
+            className={"tab" + (activeTab === tab.key ? " active" : "")}
             onClick={() => setActiveTab(tab.key)}
-            style={{
-              fontWeight: activeTab === tab.key ? "bold" : "normal",
-              textDecoration: activeTab === tab.key ? "underline" : "none",
-            }}
           >
             {tab.label}
           </button>
         ))}
       </div>
 
-      {visibleItems.length === 0 && <p>No items in this category.</p>}
-
-      <ul>
-        {visibleItems.map((item) => (
-          <li
-            key={item.id}
-            style={{ marginBottom: "8px", cursor: "pointer" }}
-            onClick={() => setSelectedItem(item)}
-          >
-            <strong>{item.name}</strong> — {item.expirationDate} —{" "}
-            {formatDaysRemaining(item)} —{" "}
-            <span>{item.expirationStatus.replace("_", " ")}</span>
-          </li>
-        ))}
-      </ul>
+      {visibleItems.length === 0 ? (
+        <div className="empty-state">
+          <p>No items in this category.</p>
+        </div>
+      ) : (
+        <div className="expiry-list">
+          {visibleItems.map((item) => (
+            <div
+              key={item.id}
+              className="expiry-row"
+              onClick={() => setSelectedItem(item)}
+            >
+              <div className="expiry-row-main">
+                <span className="expiry-row-name">{item.name}</span>
+                <span className="expiry-row-category">{item.categoryName}</span>
+              </div>
+              <div className="expiry-row-meta">
+                <span className="expiry-row-days">
+                  {formatDaysRemaining(item)}
+                </span>
+                <span className={statusClass(item.expirationStatus)}>
+                  {item.expirationStatus.replace("_", " ")}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {selectedItem && (
         <FoodDetailsModal
