@@ -1015,3 +1015,50 @@ input:focus-visible {
     grid-template-columns: 1fr;
   }
 }
+/* --- Expiration "stamp" badge --- */
+
+.stamp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  padding: 4px 10px;
+  border: 2px solid currentColor;
+  border-radius: 4px;
+  transform: rotate(-4deg);
+  white-space: nowrap;
+  background: transparent;
+}
+
+.stamp::before {
+  content: "";
+}
+
+.stamp-fresh {
+  color: var(--color-primary);
+}
+
+.stamp-expiring-soon {
+  color: #a3781f;
+  transform: rotate(3deg);
+}
+
+.stamp-critical {
+  color: var(--color-danger);
+  transform: rotate(-3deg);
+}
+
+.stamp-expired {
+  color: var(--color-ink);
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+}
+
+.stamp-expired {
+  color: white;
+  transform: rotate(-6deg);
+}

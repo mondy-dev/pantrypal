@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import * as foodService from "../services/foodService";
 import AddFoodModal from "../components/AddFoodModal";
 import FoodDetailsModal from "../components/FoodDetailsModal";
+import StampBadge from "../components/StampBadge";
 
 function Inventory() {
   const [items, setItems] = useState([]);
@@ -85,13 +86,6 @@ function Inventory() {
     return result;
   }, [items, search, categoryFilter, storageFilter, stockFilter, sortBy]);
 
-  const statusClass = (status) => {
-    if (status === "EXPIRED") return "status-tag status-expired";
-    if (status === "CRITICAL") return "status-tag status-critical";
-    if (status === "EXPIRING_SOON") return "status-tag status-expiring-soon";
-    return "status-tag status-fresh";
-  };
-
   if (loading)
     return (
       <div className="page">
@@ -173,9 +167,7 @@ function Inventory() {
           >
             <div className="food-card-header">
               <h3>{item.name}</h3>
-              <span className={statusClass(item.expirationStatus)}>
-                {item.expirationStatus.replace("_", " ")}
-              </span>
+              <StampBadge status={item.expirationStatus} />
             </div>
 
             <p className="food-card-category">{item.categoryName}</p>

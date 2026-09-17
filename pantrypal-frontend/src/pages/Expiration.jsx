@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import * as foodService from "../services/foodService";
 import FoodDetailsModal from "../components/FoodDetailsModal";
+import StampBadge from "../components/StampBadge";
 
 const TABS = [
   { key: "ALL", label: "All" },
@@ -55,13 +56,6 @@ function Expiration() {
     return `${item.daysUntilExpiration} day(s) remaining`;
   };
 
-  const statusClass = (status) => {
-    if (status === "EXPIRED") return "status-tag status-expired";
-    if (status === "CRITICAL") return "status-tag status-critical";
-    if (status === "EXPIRING_SOON") return "status-tag status-expiring-soon";
-    return "status-tag status-fresh";
-  };
-
   if (loading)
     return (
       <div className="page">
@@ -109,9 +103,7 @@ function Expiration() {
                 <span className="expiry-row-days">
                   {formatDaysRemaining(item)}
                 </span>
-                <span className={statusClass(item.expirationStatus)}>
-                  {item.expirationStatus.replace("_", " ")}
-                </span>
+                <StampBadge status={item.expirationStatus} />
               </div>
             </div>
           ))}
