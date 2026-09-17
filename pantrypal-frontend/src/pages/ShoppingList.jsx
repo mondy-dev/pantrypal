@@ -102,39 +102,43 @@ function ShoppingList() {
   const pendingItems = items.filter((i) => !i.purchased);
   const purchasedItems = items.filter((i) => i.purchased);
 
-  if (loading) return <p>Loading shopping list...</p>;
+  if (loading)
+    return (
+      <div className="page">
+        <p>Loading shopping list...</p>
+      </div>
+    );
 
   return (
-    <div style={{ padding: "32px" }}>
-      <h1>Shopping List</h1>
+    <div className="page">
+      <div className="page-header">
+        <h1>Shopping List</h1>
+      </div>
 
       {error && <p className="error-message">{error}</p>}
 
       {suggestions.length > 0 && (
-        <div style={{ marginBottom: "24px" }}>
-          <h2>Suggested (Low Stock)</h2>
-          <ul>
-            {suggestions.map((f) => (
-              <li key={f.id} style={{ marginBottom: "6px" }}>
-                {f.name} is running low ({f.quantity} {f.unit} left).{" "}
-                <button type="button" onClick={() => handleAddSuggestion(f)}>
-                  Add to list
-                </button>
-              </li>
-            ))}
-          </ul>
+        <div className="suggestion-box">
+          <h2 className="section-heading">Suggested (Low Stock)</h2>
+          {suggestions.map((f) => (
+            <div key={f.id} className="suggestion-row">
+              <span>
+                <strong>{f.name}</strong> is running low ({f.quantity} {f.unit}{" "}
+                left)
+              </span>
+              <button
+                type="button"
+                className="btn-secondary btn-small"
+                onClick={() => handleAddSuggestion(f)}
+              >
+                Add to list
+              </button>
+            </div>
+          ))}
         </div>
       )}
 
-      <form
-        onSubmit={handleAdd}
-        style={{
-          display: "flex",
-          gap: "8px",
-          marginBottom: "24px",
-          flexWrap: "wrap",
-        }}
-      >
+      <form onSubmit={handleAdd} className="shopping-add-form">
         <input
           placeholder="Item name"
           value={name}
@@ -142,7 +146,7 @@ function ShoppingList() {
           required
         />
         <input
-          placeholder="Quantity"
+          placeholder="Qty"
           type="number"
           step="any"
           min="0"
@@ -154,89 +158,133 @@ function ShoppingList() {
           value={unit}
           onChange={(e) => setUnit(e.target.value)}
         />
-        <button type="submit">Add Item</button>
+        <button type="submit" className="btn-primary">
+          Add Item
+        </button>
       </form>
 
-      <h2>Pending</h2>
-      {pendingItems.length === 0 && <p>Nothing pending.</p>}
-      <ul>
-        {pendingItems.map((item) => (
-          <li key={item.id} style={{ marginBottom: "8px" }}>
-            {editingId === item.id ? (
-              <>
-                <input
-                  value={editForm.name}
-                  onChange={(e) =>
-                    setEditForm({ ...editForm, name: e.target.value })
-                  }
-                />
-                <input
-                  type="number"
-                  step="any"
-                  value={editForm.quantity}
-                  onChange={(e) =>
-                    setEditForm({ ...editForm, quantity: e.target.value })
-                  }
-                />
-                <input
-                  value={editForm.unit}
-                  onChange={(e) =>
-                    setEditForm({ ...editForm, unit: e.target.value })
-                  }
-                />
-                <button type="button" onClick={() => handleSaveEdit(item.id)}>
-                  Save
-                </button>
-                <button type="button" onClick={() => setEditingId(null)}>
-                  Cancel
-                </button>
-              </>
-            ) : (
-              <>
-                <input
-                  type="checkbox"
-                  checked={false}
-                  onChange={() => handleToggle(item.id)}
-                />{" "}
-                {item.name}{" "}
-                {item.quantity ? `— ${item.quantity} ${item.unit || ""}` : ""}{" "}
-                <button type="button" onClick={() => startEdit(item)}>
-                  Edit
-                </button>
-                <button type="button" onClick={() => handleDelete(item.id)}>
-                  Delete
-                </button>
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
+      <h2 className="section-heading">Pending ({pendingItems.length})</h2>
+      {pendingItems.length === 0 ? (
+        <div className="empty-state">
+          <p>Nothing pending.</p>
+        </div>
+      ) : (
+        <div className="shopping-list-group">
+          {pendingItems.map((item) => (
+            <div key={item.id} className="shopping-row">
+              {editingId === item.id ? (
+                <>
+                  <input
+                    className="shopping-edit-input"
+                    value={editForm.name}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, name: e.target.value })
+                    }
+                  />
+                  <input
+                    className="shopping-edit-input shopping-edit-qty"
+                    type="number"
+                    step="any"
+                    value={editForm.quantity}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, quantity: e.target.value })
+                    }
+                  />
+                  <input
+                    className="shopping-edit-input shopping-edit-qty"
+                    value={editForm.unit}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, unit: e.target.value })
+                    }
+                  />
+                  <button
+                    type="button"
+                    className="btn-primary btn-small"
+                    onClick={() => handleSaveEdit(item.id)}
+                  >
+                    Save
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-secondary btn-small"
+                    onClick={() => setEditingId(null)}
+                  >
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <>
+                  <input
+                    type="checkbox"
+                    className="shopping-checkbox"
+                    checked={false}
+                    onChange={() => handleToggle(item.id)}
+                  />
+                  <span className="shopping-row-text">
+                    {item.name}
+                    {item.quantity ? (
+                      <span className="shopping-row-qty">
+                        {" "}
+                        — {item.quantity} {item.unit || ""}
+                      </span>
+                    ) : null}
+                  </span>
+                  <button
+                    type="button"
+                    className="btn-secondary btn-small"
+                    onClick={() => startEdit(item)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-danger btn-small"
+                    onClick={() => handleDelete(item.id)}
+                  >
+                    Delete
+                  </button>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
 
-      <h2>Purchased</h2>
-      {purchasedItems.length === 0 && <p>Nothing purchased yet.</p>}
-      <ul>
-        {purchasedItems.map((item) => (
-          <li
-            key={item.id}
-            style={{ marginBottom: "8px", textDecoration: "line-through" }}
-          >
-            <input
-              type="checkbox"
-              checked={true}
-              onChange={() => handleToggle(item.id)}
-            />{" "}
-            {item.name}{" "}
-            {item.quantity ? `— ${item.quantity} ${item.unit || ""}` : ""}{" "}
-            <button
-              type="button"
-              onClick={() => handleDelete(item.id)}
-              style={{ textDecoration: "none" }}
-            >
-              Delete
-            </button>
-          </li>
-        ))}
-      </ul>
+      <h2 className="section-heading">Purchased ({purchasedItems.length})</h2>
+      {purchasedItems.length === 0 ? (
+        <div className="empty-state">
+          <p>Nothing purchased yet.</p>
+        </div>
+      ) : (
+        <div className="shopping-list-group">
+          {purchasedItems.map((item) => (
+            <div key={item.id} className="shopping-row purchased">
+              <input
+                type="checkbox"
+                className="shopping-checkbox"
+                checked={true}
+                onChange={() => handleToggle(item.id)}
+              />
+              <span className="shopping-row-text">
+                {item.name}
+                {item.quantity ? (
+                  <span className="shopping-row-qty">
+                    {" "}
+                    — {item.quantity} {item.unit || ""}
+                  </span>
+                ) : null}
+              </span>
+              <button
+                type="button"
+                className="btn-danger btn-small"
+                onClick={() => handleDelete(item.id)}
+              >
+                Delete
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

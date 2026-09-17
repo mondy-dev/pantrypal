@@ -16,6 +16,13 @@ function formatEntry(entry) {
   return `${entry.actionType} — ${name}`;
 }
 
+function iconFor(actionType) {
+  if (actionType === "ADDED") return "＋";
+  if (actionType === "CONSUMED") return "✓";
+  if (actionType === "DELETED") return "－";
+  return "•";
+}
+
 function History() {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,33 +36,52 @@ function History() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <p>Loading history...</p>;
+  if (loading)
+    return (
+      <div className="page">
+        <p>Loading history...</p>
+      </div>
+    );
 
   return (
-    <div style={{ padding: "32px" }}>
-      <h1>Inventory History</h1>
+    <div className="page">
+      <div className="page-header">
+        <h1>Inventory History</h1>
+      </div>
 
       {error && <p className="error-message">{error}</p>}
-      {history.length === 0 && <p>No activity yet.</p>}
 
-      <ul>
-        {history.map((entry) => (
-          <li key={entry.id} style={{ marginBottom: "12px" }}>
-            <div>
-              ✓ {formatEntry(entry)}
-              {entry.note && (
-                <span style={{ color: "var(--color-ink-soft)" }}>
-                  {" "}
-                  — "{entry.note}"
-                </span>
-              )}
+      {history.length === 0 ? (
+        <div className="empty-state">
+          <p>No activity yet.</p>
+        </div>
+      ) : (
+        <div className="history-list">
+          {history.map((entry) => (
+            <div key={entry.id} className="history-row">
+              <div
+                className={
+                  "history-icon history-icon-" + entry.actionType.toLowerCase()
+                }
+              >
+                {iconFor(entry.actionType)}
+              </div>
+              <div className="history-content">
+                <p className="history-text">
+                  {formatEntry(entry)}
+                  {entry.note && (
+                    <span className="history-note"> — "{entry.note}"</span>
+                  )}
+                </p>
+                <p className="history-meta">
+                  {entry.userName} ·{" "}
+                  {new Date(entry.createdAt).toLocaleString()}
+                </p>
+              </div>
             </div>
-            <div style={{ fontSize: "13px", color: "var(--color-ink-soft)" }}>
-              {entry.userName} · {new Date(entry.createdAt).toLocaleString()}
-            </div>
-          </li>
-        ))}
-      </ul>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
