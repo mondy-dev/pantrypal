@@ -109,11 +109,11 @@ input:focus-visible {
 }
 
 .auth-form label {
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  color: var(--color-ink-soft);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--color-ink);
   margin-bottom: 6px;
   margin-top: 16px;
 }
@@ -121,22 +121,22 @@ input:focus-visible {
 .auth-form input {
   font-family: var(--font-body);
   font-size: 15px;
-  padding: 10px 12px;
+  padding: 12px 14px;
   border: 1px solid var(--color-border);
-  border-radius: 6px;
+  border-radius: 10px;
   background: var(--color-bg);
   color: var(--color-ink);
 }
 
 .auth-form button {
   margin-top: 24px;
-  padding: 12px;
+  padding: 14px;
   border: none;
-  border-radius: 6px;
+  border-radius: 10px;
   background: var(--color-primary);
   color: white;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
   transition: background 0.15s ease;
 }
 
@@ -171,7 +171,8 @@ input:focus-visible {
 
 .app-layout {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .sidebar {
@@ -197,6 +198,19 @@ input:focus-visible {
   flex-direction: column;
   gap: 4px;
   flex: 1;
+}
+
+.sidebar-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  margin: 18px 12px 6px;
+}
+
+.sidebar-nav > div:first-child .sidebar-section-label {
+  margin-top: 4px;
 }
 
 .sidebar-link {
@@ -245,6 +259,7 @@ input:focus-visible {
 
 .main-content {
   flex: 1;
+  height: 100vh;
   background: var(--color-bg);
   overflow-y: auto;
 }
@@ -1061,4 +1076,261 @@ input:focus-visible {
 .stamp-expired {
   color: white;
   transform: rotate(-6deg);
+}
+.quick-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.alert-line {
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.alert-danger {
+  color: var(--color-danger);
+}
+
+.alert-warning {
+  color: #a3781f;
+}
+.quick-action-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.quick-action-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.quick-action-tile:hover {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.dashboard-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+@media (max-width: 800px) {
+  .dashboard-columns {
+    grid-template-columns: 1fr;
+  }
+}
+/* --- Auth split-screen layout --- */
+
+.auth-split-page {
+  display: flex;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.auth-brand-panel {
+  position: relative;
+  flex: 0.8;
+  min-width: 340px;
+  overflow: hidden;
+  background: linear-gradient(
+    160deg,
+    #375946 0%,
+    var(--color-primary) 45%,
+    #1c2e24 100%
+  );
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 56px;
+}
+
+.auth-brand-watermark {
+  position: absolute;
+  width: 620px;
+  height: 620px;
+  bottom: -140px;
+  right: -160px;
+  opacity: 0.07;
+  transform: rotate(-12deg);
+  pointer-events: none;
+}
+
+.auth-jar-illustration {
+  width: 88px;
+  height: auto;
+  margin-bottom: 4px;
+}
+
+.auth-brand-wordmark {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 34px;
+  color: white;
+}
+
+.auth-brand-tagline {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 320px;
+  line-height: 1.5;
+}
+
+.auth-brand-features {
+  list-style: none;
+  padding: 0;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.auth-brand-features li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.auth-form-panel {
+  flex: 1;
+  min-width: 340px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--color-bg);
+  overflow-y: auto;
+}
+
+@media (max-width: 780px) {
+  .auth-brand-panel {
+    display: none;
+  }
+}
+.auth-brand-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  max-width: 380px;
+}
+.auth-form-wide {
+  max-width: 520px;
+  padding-top: 28px;
+  padding-bottom: 28px;
+}
+
+.auth-form-wide label {
+  margin-top: 10px;
+}
+
+.auth-form-wide .form-divider-bordered {
+  margin-top: 14px;
+  padding-top: 12px;
+}
+
+.auth-icon {
+  width: 40px;
+  height: auto;
+  display: block;
+  margin: 0 auto 8px;
+}
+
+.form-divider {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
+  margin: 16px 0 4px;
+}
+
+.form-divider-bordered {
+  padding-top: 16px;
+  margin-top: 20px;
+  border-top: 1px solid var(--color-border);
+}
+
+/* --- Auth panel swap animation --- */
+
+@keyframes authFormPanelIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes authBrandPanelIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.auth-form-panel {
+  animation: authFormPanelIn 2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.auth-brand-panel {
+  animation: authBrandPanelIn 2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Reverse direction: used when navigating back (e.g. Register -> Login) */
+
+@keyframes authFormPanelInReverse {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes authBrandPanelInReverse {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.auth-split-page.direction-reverse .auth-form-panel {
+  animation: authFormPanelInReverse 2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.auth-split-page.direction-reverse .auth-brand-panel {
+  animation: authBrandPanelInReverse 2s cubic-bezier(0.16, 1, 0.3, 1)
+    both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-form-panel,
+  .auth-brand-panel {
+    animation: none;
+  }
 }

@@ -12,14 +12,25 @@ import {
 import { useAuth } from "../context/useAuth";
 import { useHousehold } from "../context/useHousehold";
 
-const NAV_ITEMS = [
-  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/household", label: "Household", icon: Home },
-  { to: "/inventory", label: "Inventory", icon: Package },
-  { to: "/expiration", label: "Expiration", icon: Clock },
-  { to: "/shopping-list", label: "Shopping List", icon: ShoppingCart },
-  { to: "/history", label: "History", icon: HistoryIcon },
-  { to: "/reports", label: "Reports", icon: BarChart3 },
+const NAV_SECTIONS = [
+  {
+    label: "Main",
+    items: [{ to: "/dashboard", label: "Dashboard", icon: LayoutDashboard }],
+  },
+  {
+    label: "Manage",
+    items: [
+      { to: "/household", label: "Household", icon: Home },
+      { to: "/inventory", label: "Inventory", icon: Package },
+      { to: "/expiration", label: "Expiration", icon: Clock },
+      { to: "/shopping-list", label: "Shopping List", icon: ShoppingCart },
+      { to: "/history", label: "History", icon: HistoryIcon },
+    ],
+  },
+  {
+    label: "Reports",
+    items: [{ to: "/reports", label: "Reports", icon: BarChart3 }],
+  },
 ];
 
 function AppLayout() {
@@ -39,17 +50,22 @@ function AppLayout() {
         <div className="sidebar-wordmark">PantryPal</div>
 
         <nav className="sidebar-nav">
-          {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
-            <NavLink
-              key={to}
-              to={to}
-              className={({ isActive }) =>
-                "sidebar-link" + (isActive ? " active" : "")
-              }
-            >
-              <Icon size={18} />
-              <span>{label}</span>
-            </NavLink>
+          {NAV_SECTIONS.map((section) => (
+            <div key={section.label}>
+              <p className="sidebar-section-label">{section.label}</p>
+              {section.items.map(({ to, label, icon: Icon }) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  className={({ isActive }) =>
+                    "sidebar-link" + (isActive ? " active" : "")
+                  }
+                >
+                  <Icon size={18} />
+                  <span>{label}</span>
+                </NavLink>
+              ))}
+            </div>
           ))}
         </nav>
 
