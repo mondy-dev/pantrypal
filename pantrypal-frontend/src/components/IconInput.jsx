@@ -6,9 +6,11 @@ function IconInput({
   onChange,
   placeholder,
   required,
+  ...rest
 }) {
   return (
     <div
+      className="icon-input"
       style={{
         display: "flex",
         alignItems: "stretch",
@@ -35,6 +37,7 @@ function IconInput({
         onChange={onChange}
         placeholder={placeholder}
         required={required}
+        {...rest}
         style={{
           flex: 1,
           minWidth: 0,

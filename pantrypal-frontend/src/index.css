@@ -120,7 +120,7 @@ input:focus-visible {
   text-transform: none;
   color: var(--color-ink);
   margin-bottom: 6px;
-  margin-top: 16px;
+  margin-top: 1px;
 }
 
 .auth-form input {
@@ -1371,6 +1371,15 @@ input:focus-visible {
   }
 }
 
+.auth-form-panel,
+.auth-brand-panel {
+  /* Promote to their own compositor layer before the slide starts, so the
+     2s animation moves a cached layer instead of repainting the gradient
+     background (and everything on top of it) on every frame. */
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
 .auth-form-panel {
   animation: authFormPanelIn 2s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
@@ -1488,4 +1497,330 @@ input:focus-visible {
   .main-content {
     padding-top: 56px;
   }
+}
+.create-household-page .auth-form-panel {
+  padding: 10px;
+}
+.create-household-page .auth-form {
+  padding: 18px 22px;
+}
+
+.create-household-page .onboarding-title {
+  font-size: 22px;
+}
+.create-household-page .onboarding-subtitle {
+  margin: 8px 0 8px;
+}
+
+.create-household-page .name-chips {
+  margin-top: 4px;
+}
+.create-household-page .auth-form button[type="submit"] {
+  margin-top: 15px;
+}
+.create-household-page .onboarding-or {
+  margin: 8px 0 0;
+}
+.create-household-page .invite-box {
+  padding: 8px 10px;
+}
+.create-household-page .btn-outline-full {
+  margin-top: 6px;
+  padding: 7px;
+}
+.create-household-page .invite-status {
+  margin-top: 3px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+.create-household-page .onboarding-footer {
+  margin-top: 8px;
+  padding-top: 6px;
+}
+
+/* --- Create household: lighter fade+rise animation ---
+   Scoped to .create-household-page only, so Login/Register keep the
+   original 2s slide. This page's panels have more content (step tracker,
+   invite box, chips), so instead of translating the full panel width we
+   just fade + rise a short distance: fewer pixels move, so there's less
+   for the browser to composite each frame, and it finishes faster. */
+
+@keyframes onboardingRiseIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes onboardingBrandFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.create-household-page .auth-form-panel {
+  animation: onboardingRiseIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.create-household-page .auth-brand-panel {
+  /* Plain fade for the brand panel: it's the heavier of the two (gradient +
+     step tracker), and a fade has nothing to composite but opacity. */
+  animation: onboardingBrandFadeIn 0.6s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .create-household-page .auth-form-panel,
+  .create-household-page .auth-brand-panel {
+    animation: none;
+  }
+}
+
+/* --- Create household (onboarding) --- */
+
+/* Focus ring for IconInput: the inner <input> has outline: none inline, so
+   show the focus state on the wrapper instead. */
+.icon-input:focus-within {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 3px rgba(47, 75, 60, 0.15);
+}
+
+.auth-form .onboarding-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
+  text-align: left;
+  margin: 0 0 12px;
+}
+
+.auth-form .onboarding-title {
+  font-family: var(--font-body);
+  font-style: normal;
+  font-size: 25px;
+  font-weight: 700;
+  color: var(--color-ink);
+  text-align: left;
+  margin: 0;
+}
+
+.auth-form .onboarding-subtitle {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--color-ink-soft);
+  text-align: left;
+  margin: 6px 0 20px;
+}
+
+.onboarding-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-form .onboarding-hint {
+  font-size: 13px;
+  text-align: left;
+  margin: 8px 0 0;
+}
+
+.name-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.name-chips-label {
+  font-size: 13px;
+  color: var(--color-ink-soft);
+}
+
+.auth-form .name-chip {
+  margin: 0;
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.auth-form .name-chip:hover:not(:disabled) {
+  background: #ebe4d2;
+  border-color: var(--color-primary);
+}
+
+.auth-form .name-chip[aria-pressed="true"] {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+
+.auth-form .name-chip[aria-pressed="true"]:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+}
+
+.auth-form .onboarding-or {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0 0;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.auth-form .onboarding-or::before,
+.auth-form .onboarding-or::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.auth-form .invite-box {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px dashed var(--color-border);
+  border-radius: 10px;
+  background: var(--color-bg);
+}
+
+.auth-form .invite-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-ink);
+  text-align: left;
+}
+
+.auth-form .invite-text {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.auth-form .invite-text strong {
+  color: var(--color-ink);
+}
+
+.auth-form .invite-status {
+  margin: 10px 0 0;
+  font-size: 13px;
+  text-align: left;
+}
+
+.auth-form .btn-outline-full {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 14px;
+  padding: 11px;
+  border: 1px solid var(--color-primary);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.auth-form .btn-outline-full:hover:not(:disabled) {
+  background: rgba(47, 75, 60, 0.08);
+}
+
+.auth-form .onboarding-footer {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+  font-size: 13px;
+}
+
+.auth-form .link-button {
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.auth-form .link-button:hover:not(:disabled) {
+  background: none;
+  color: var(--color-primary-dark);
+}
+
+.spin {
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spin {
+    animation: none;
+  }
+}
+
+/* Compact logo shown only where the brand panel is hidden */
+.auth-mobile-brand {
+  display: none;
+}
+
+@media (max-width: 780px) {
+  .auth-mobile-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .auth-mobile-wordmark {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+}
+
+/* Auth pages taller than the viewport (e.g. Create household on a phone) must
+   scroll inside the form panel. body is overflow: hidden, so a min-height here
+   would silently clip the bottom of the card. Auto margins on the card keep it
+   centered when there is room, without cutting off the top when there isn't. */
+.auth-split-page {
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+}
+
+.auth-form-panel {
+  align-items: flex-start;
+}
+
+.auth-form-panel > .auth-form {
+  margin: auto;
 }
