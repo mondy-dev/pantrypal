@@ -1,6 +1,5 @@
 package com.pantrypal.backend.service;
 
-import com.pantrypal.backend.dto.AuthResponse;
 import com.pantrypal.backend.dto.LoginRequest;
 import com.pantrypal.backend.dto.RegisterRequest;
 import com.pantrypal.backend.exception.AuthException;
@@ -18,7 +17,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
@@ -35,6 +34,9 @@ class AuthServiceTest {
     @InjectMocks
     private AuthService authService;
 
+    @Mock
+    private EmailService emailService;
+
     @Test
     void register_shouldThrowException_whenEmailAlreadyExists() {
         RegisterRequest request = new RegisterRequest();
@@ -50,25 +52,28 @@ class AuthServiceTest {
     }
 
     @Test
-    void register_shouldHashPasswordAndReturnToken_whenEmailIsNew() {
+    void register_shouldHashPassword_whenEmailIsNew() {
         RegisterRequest request = new RegisterRequest();
         request.setEmail("new@example.com");
         request.setFirstName("Test");
         request.setLastName("User");
         request.setPassword("plainPassword");
 
-        User savedUser = new User("Test",null, "User", "new@example.com", "hashedPassword");
+        User savedUser = new User(
+                "Test",
+                null,
+                "User",
+                "new@example.com",
+                "hashedPassword");
         savedUser.setId(1L);
 
         when(userRepository.existsByEmail("new@example.com")).thenReturn(false);
         when(passwordEncoder.encode("plainPassword")).thenReturn("hashedPassword");
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
-        when(jwtUtil.generateToken(1L, "new@example.com")).thenReturn("fake-jwt-token");
 
-        AuthResponse response = authService.register(request);
+        assertDoesNotThrow(() -> authService.register(request));
 
-        assertEquals("fake-jwt-token", response.getToken());
-        assertEquals("new@example.com", response.getEmail());
+        verify(userRepository).save(any(User.class));
     }
 
     @Test
@@ -77,7 +82,7 @@ class AuthServiceTest {
         request.setEmail("user@example.com");
         request.setPassword("wrongPassword");
 
-        User existingUser = new User("Test",null, "User", "user@example.com", "correctHashedPassword");
+        User existingUser = new User("Test", null, "User", "user@example.com", "correctHashedPassword");
 
         when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(existingUser));
         when(passwordEncoder.matches("wrongPassword", "correctHashedPassword")).thenReturn(false);
@@ -92,16 +97,29 @@ class AuthServiceTest {
         request.setEmail("user@example.com");
         request.setPassword("correctPassword");
 
-        User existingUser = new User("Test",null, "User", "user@example.com", "correctHashedPassword");
+        User existingUser = new User(
+                "Test",
+                null,
+                "User",
+                "user@example.com",
+                "correctHashedPassword");
         existingUser.setId(5L);
+        existingUser.setEmailVerified(true);
 
-        when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(existingUser));
-        when(passwordEncoder.matches("correctPassword", "correctHashedPassword")).thenReturn(true);
-        when(jwtUtil.generateToken(5L, "user@example.com")).thenReturn("fake-jwt-token");
+        when(userRepository.findByEmail("user@example.com"))
+                .thenReturn(Optional.of(existingUser));
 
-        AuthResponse response = authService.login(request);
+        when(passwordEncoder.matches(
+                "correctPassword",
+                "correctHashedPassword")).thenReturn(true);
+
+        when(jwtUtil.generateToken(5L, "user@example.com"))
+                .thenReturn("fake-jwt-token");
+
+        var response = authService.login(request);
 
         assertEquals("fake-jwt-token", response.getToken());
         assertEquals("user@example.com", response.getEmail());
     }
+
 }

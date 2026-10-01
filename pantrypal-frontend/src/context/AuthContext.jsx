@@ -32,42 +32,31 @@ export function AuthProvider({ children }) {
     return loggedInUser;
   };
 
-  const register = async (firstName, middleName, lastName, email, password) => {
-    const data = await authService.register(
-      firstName,
-      middleName,
-      lastName,
-      email,
-      password,
-    );
-    const registeredUser = {
-      userId: data.userId,
-      firstName: data.firstName,
-      middleName: data.middleName,
-      lastName: data.lastName,
-      email: data.email,
+    const register = async (firstName, middleName, lastName, email, password) => {
+      // No token is returned anymore — registration now requires email verification.
+      const data = await authService.register(
+        firstName,
+        middleName,
+        lastName,
+        email,
+        password,
+      );
+      return data; // { message: "..." }
     };
 
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(registeredUser));
-    setUser(registeredUser);
+    const logout = () => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      setUser(null);
+    };
 
-    return registeredUser;
-  };
+    const value = {
+      user,
+      isAuthenticated: !!user,
+      login,
+      register,
+      logout,
+    };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setUser(null);
-  };
-
-  const value = {
-    user,
-    isAuthenticated: !!user,
-    login,
-    register,
-    logout,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
+    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  }

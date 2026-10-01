@@ -9,8 +9,23 @@ import {
   BarChart3,
 } from "lucide-react";
 import { useAuth } from "../context/useAuth";
+import { useHousehold } from "../context/useHousehold";
 import * as foodService from "../services/foodService";
 import AddFoodModal from "../components/AddFoodModal";
+import NotificationBell from "../components/NotificationBell";
+import UserMenu from "../components/UserMenu";
+import CategoryDonutChart from "../components/CategoryDonutChart";
+
+const CATEGORY_COLORS = [
+  "#2f4b3c",
+  "#d9a441",
+  "#c4472e",
+  "#5b7f97",
+  "#8a6d3b",
+  "#6b8f5c",
+  "#9c6b96",
+  "#4a90a4",
+];
 
 function formatEntry(entry) {
   const name = entry.foodItemName;
@@ -22,8 +37,11 @@ function formatEntry(entry) {
   return `${entry.actionType} — ${name}`;
 }
 
+const isOther = (name) => name.trim().toLowerCase() === "other";
+
 function Dashboard() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const { household, clearHousehold } = useHousehold();
   const navigate = useNavigate();
 
   const [items, setItems] = useState([]);
@@ -45,15 +63,11 @@ function Dashboard() {
     loadData();
   }, []);
 
-  const expiredCount = items.filter(
-    (i) => i.expirationStatus === "EXPIRED",
-  ).length;
-  const criticalCount = items.filter(
-    (i) => i.expirationStatus === "CRITICAL",
-  ).length;
-  const expiringSoonCount = items.filter(
+  const expiredItems = items.filter((i) => i.expirationStatus === "EXPIRED");
+  const criticalItems = items.filter((i) => i.expirationStatus === "CRITICAL");
+  const expiringSoonItems = items.filter(
     (i) => i.expirationStatus === "EXPIRING_SOON",
-  ).length;
+  );
 
   const outOfStockItems = items.filter((i) => Number(i.quantity) === 0);
   const lowStockItems = items.filter(
@@ -63,12 +77,67 @@ function Dashboard() {
       Number(i.quantity) < Number(i.minimumStock),
   );
 
-  const categoryCount = new Set(items.map((i) => i.categoryName)).size;
+  const categoryCounts = items.reduce((acc, item) => {
+    const name = item.categoryName || "Uncategorized";
+    acc[name] = (acc[name] || 0) + 1;
+    return acc;
+  }, {});
+  const categoryData = Object.entries(categoryCounts)
+    .sort(([nameA, countA], [nameB, countB]) => {
+      if (isOther(nameA) !== isOther(nameB)) return isOther(nameA) ? 1 : -1;
+      return countB - countA;
+    })
+    .map(([name, count], i) => ({
+      name,
+      count,
+      color: CATEGORY_COLORS[i % CATEGORY_COLORS.length],
+    }));
+  const categoryCount = categoryData.length;
+
   const hasAlerts =
-    expiredCount > 0 ||
-    criticalCount > 0 ||
-    expiringSoonCount > 0 ||
+    expiredItems.length > 0 ||
+    criticalItems.length > 0 ||
+    expiringSoonItems.length > 0 ||
     lowStockItems.length > 0;
+
+  const notifications = [
+    ...expiredItems.map((i) => ({
+      id: `expired-${i.id}`,
+      type: "danger",
+      message: `${i.name} has expired`,
+      path: "/expiration",
+    })),
+    ...criticalItems.map((i) => ({
+      id: `critical-${i.id}`,
+      type: "danger",
+      message: `${i.name} expires within 7 days`,
+      path: "/expiration",
+    })),
+    ...expiringSoonItems.map((i) => ({
+      id: `soon-${i.id}`,
+      type: "warning",
+      message: `${i.name} is expiring this month`,
+      path: "/expiration",
+    })),
+    ...outOfStockItems.map((i) => ({
+      id: `out-${i.id}`,
+      type: "danger",
+      message: `${i.name} is out of stock`,
+      path: "/shopping-list",
+    })),
+    ...lowStockItems.map((i) => ({
+      id: `low-${i.id}`,
+      type: "warning",
+      message: `${i.name} is running low (${i.quantity} ${i.unit} left)`,
+      path: "/shopping-list",
+    })),
+  ];
+
+  const handleLogout = () => {
+    logout();
+    clearHousehold();
+    navigate("/login");
+  };
 
   const QUICK_ACTIONS = [
     { label: "Add Food", icon: Plus, onClick: () => setShowAddModal(true) },
@@ -93,8 +162,25 @@ function Dashboard() {
 
   return (
     <div className="page">
-      <div className="page-header">
-        <h1>Welcome, {user?.firstName}!</h1>
+      <div className="page-header dashboard-topbar">
+        <div>
+          <h1>Welcome, {user?.firstName}!</h1>
+          {household?.name && (
+            <p className="dashboard-subtitle">{household.name}</p>
+          )}
+        </div>
+
+        <div className="topbar-actions">
+          <NotificationBell
+            alerts={notifications}
+            onSelect={(alert) => navigate(alert.path)}
+          />
+          <UserMenu
+            user={user}
+            householdName={household?.name}
+            onLogout={handleLogout}
+          />
+        </div>
       </div>
 
       <div className="stat-grid">
@@ -116,6 +202,17 @@ function Dashboard() {
         </div>
       </div>
 
+      <div className="overview-card">
+        <h2 className="section-heading overview-heading">
+          Inventory by Category
+        </h2>
+        {loading ? (
+          <p className="report-empty">Loading...</p>
+        ) : (
+          <CategoryDonutChart data={categoryData} />
+        )}
+      </div>
+
       <h2 className="section-heading">Quick Actions</h2>
       <div className="quick-action-grid">
         {QUICK_ACTIONS.map(({ label, icon: Icon, onClick }) => (
@@ -134,22 +231,22 @@ function Dashboard() {
               <p>No alerts right now.</p>
             </div>
           )}
-          {expiredCount > 0 && (
+          {expiredItems.length > 0 && (
             <p className="alert-line alert-danger">
-              {expiredCount} item{expiredCount > 1 ? "s have" : " has"} already
-              expired.
+              {expiredItems.length} item
+              {expiredItems.length > 1 ? "s have" : " has"} already expired.
             </p>
           )}
-          {criticalCount > 0 && (
+          {criticalItems.length > 0 && (
             <p className="alert-line alert-danger">
-              {criticalCount} item{criticalCount > 1 ? "s" : ""} expiring within
-              7 days.
+              {criticalItems.length} item{criticalItems.length > 1 ? "s" : ""}{" "}
+              expiring within 7 days.
             </p>
           )}
-          {expiringSoonCount > 0 && (
+          {expiringSoonItems.length > 0 && (
             <p className="alert-line alert-warning">
-              {expiringSoonCount} item{expiringSoonCount > 1 ? "s" : ""}{" "}
-              expiring this month.
+              {expiringSoonItems.length} item
+              {expiringSoonItems.length > 1 ? "s" : ""} expiring this month.
             </p>
           )}
           {lowStockItems.map((item) => (

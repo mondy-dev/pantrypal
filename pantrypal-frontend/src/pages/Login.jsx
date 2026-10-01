@@ -90,6 +90,12 @@ function Login() {
             placeholder="Enter your password"
           />
 
+          <p style={{ textAlign: "right", marginTop: "4px" }}>
+            <Link to="/forgot-password" style={{ fontSize: "13px" }}>
+              Forgot password?
+            </Link>
+          </p>
+
           <button type="submit" disabled={loading}>
             {loading ? "Logging in..." : "Sign in"}
           </button>
